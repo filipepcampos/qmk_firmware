@@ -10,6 +10,7 @@ char wpm_str[4];
 
 enum sofle_layers {
     _BASE,
+    _WM,
     _SYMB,
     _NAV,
 };
@@ -33,7 +34,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|  MUTE |    |       |------+------+------+------+------+------|
  * |LShift|   Z  |   X  |   C  |   D  |   V  |-------|    |-------|   K  |   H  |   ,  |   .  |   /  |RShift|
  * `-----------------------------------------/       /     \      \-----------------------------------------'
- *            |      |      |      |LOWER | /Enter  /       \Space \  |RAISE |      |      |      |
+ *            |      |      |      |NAV   | /Enter  /       \Space \  | SYMB |  WM  |      |      |
  *            |      |      |      |      |/       /         \      \ |      |      |      |      |
  *            `----------------------------------'           '------''---------------------------'
  *
@@ -45,11 +46,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_ESC,   KC_Q,   KC_W,    KC_F,    KC_P,    KC_B,                      KC_J,    KC_L,    KC_U,    KC_Y, KC_BSPC,  KC_GRV,
   KC_TAB,   MT(MOD_LGUI, KC_A),  MT(MOD_LALT, KC_R),    MT(MOD_LSFT, KC_S),    MT(MOD_LCTL, KC_T),    KC_G,  KC_M, MT(MOD_LCTL, KC_N),   MT(MOD_LSFT, KC_E),   MT(MOD_RALT, KC_I),  MT(MOD_LGUI, KC_O), KC_QUOT,
   KC_LSFT,  KC_Z,   KC_X,    KC_C,    KC_D,    KC_V, KC_MUTE,      XXXXXXX,KC_K,    KC_H, KC_COMM,  KC_DOT, KC_SLSH,  KC_RSFT,
-                 _______,_______,_______,MO(_NAV), KC_ENT,        KC_SPC,  MO(_SYMB), _______, _______, _______
+                 _______,_______,_______,MO(_NAV), KC_ENT,        KC_SPC,  MO(_SYMB), MO(_WM), _______, _______
 ),
 
 
-/* LOWER
+/* Symb
  * ,-----------------------------------------.                    ,-----------------------------------------.
  * |      |  F1  |  F2  |  F3  |  F4  |  F5  |                    |  F6  |  F7  |  F8  |  F9  | F10  | F11  |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
@@ -72,15 +73,44 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 
-/* RAISE
+/* WM Navigation
+ * Useful navigation keys for my Swaywm setup
+ * GUI + Number: Switch to workspace
+ * GUI + Shift + Number: Move window to workspace
+ * GUI + W: Close window
+ * GUI + F: Toggle fullscreen
+ *
  * ,----------------------------------------.                    ,-----------------------------------------.
  * |      |      |      |      |      |      |                    |      |      |      |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * | Esc  | Ins  | Pscr | Menu |      |      |                    |      |      |      |      | DLine| Bspc |
+ * |      | G(F1)|G(F2) |G(F3) |G(F4) |G(F5) |                    | G(F6)|G(F7) |G(F8) |G(F9) |G(F10)|      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * | Tab  | LAt  | LCtl |LShift|      | Caps |-------.    ,-------| PGUP | Left | Down | Up   | Right | HOME |
+ * |      | G(1) | G(2) | G(3) | G(4) | G(5) |-------.    ,-------| G(6) | G(7) | G(8) | G(9) | G(0) |     |
  * |------+------+------+------+------+------|  MUTE  |    |       |------+------+------+------+------+------|
- * |Shift | Undo |  Cut | Copy | Paste|      |-------|    |-------| PGDN |      |      |      |      | END  |
+ * |      |      |      | G(F) |      |  G(W)|-------|    |-------|      |      |      |      |      |      |
+ * `-----------------------------------------/       /     \      \-----------------------------------------'
+ *            |      |      |      | Lsft | /       /       \Space \  |      |      |      |      |
+ *            |      |      |      |      |/       /         \      \ |      |      |      |      |
+ *            `----------------------------------'           '------''---------------------------'
+ */
+[_WM] = LAYOUT(
+  _______, _______ , _______ , _______ , _______ , _______,                           _______,  _______  , _______,  _______ ,  _______ ,_______,
+  _______,  G(KC_F1), G(KC_F2),  G(KC_F3),  G(KC_F4), G(KC_F5),                        G(KC_F6), G(KC_F7),  G(KC_F8), G(KC_F9), G(KC_F10), _______,
+  _______, G(KC_1),  G(KC_2), G(KC_3),  G(KC_4), G(KC_5),                       G(KC_6),  G(KC_7), G(KC_8), G(KC_9),  G(KC_0), _______,
+  _______, _______, _______, G(KC_F), _______, G(KC_W),  _______,       _______,  KC_PGDN, _______, XXXXXXX, _______,   XXXXXXX, _______,
+                         _______, _______, _______, KC_LSFT, _______,       _______, _______, _______, _______, _______
+),
+
+
+/* Nav
+ * ,----------------------------------------.                    ,-----------------------------------------.
+ * |      |      |      |      |      |      |                    |      |      |      |      |      |      |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * |      |      |      |      |      |      |                    |      |      |      |      | DLine| Bspc |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * |      |      |      |      |      | Caps |-------.    ,-------| PGUP | Left | Down | Up   | Right | HOME |
+ * |------+------+------+------+------+------|  MUTE  |    |       |------+------+------+------+------+------|
+ * |      | Undo |  Cut | Copy | Paste|      |-------|    |-------| PGDN |      |      |      |      | END  |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
  *            | LGUI | LAlt | LCTR |LOWER | /Enter  /       \Space \  |RAISE | RCTR | RAlt | RGUI |
  *            |      |      |      |      |/       /         \      \ |      |      |      |      |
@@ -246,24 +276,21 @@ static void render_luna(int LUNA_X, int LUNA_Y) {
 
 static void print_logo_narrow(void) {
     render_logo();
+}
 
+static void print_status_narrow(void) {
     /* wpm counter */
     uint8_t n = get_current_wpm();
     char    wpm_str[4];
-    oled_set_cursor(0, 14);
+    oled_set_cursor(0, 1);
     wpm_str[3] = '\0';
     wpm_str[2] = '0' + n % 10;
     wpm_str[1] = '0' + (n /= 10) % 10;
     wpm_str[0] = '0' + n / 10;
     oled_write(wpm_str, false);
 
-    oled_set_cursor(0, 15);
+    oled_set_cursor(0, 2);
     oled_write(" wpm", false);
-}
-
-static void print_status_narrow(void) {
-    /* Print current mode */
-    // oled_set_cursor(0, 0);
 
     oled_set_cursor(0, 5);
 
@@ -281,6 +308,9 @@ static void print_status_narrow(void) {
             break;
         case _NAV:
             oled_write("Navg", false);
+            break;
+        case _WM:
+            oled_write("Sway", false);
             break;
         default:
             oled_write("Undef", false);
