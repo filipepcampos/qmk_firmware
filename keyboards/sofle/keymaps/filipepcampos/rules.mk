@@ -1,5 +1,7 @@
 TRI_LAYER_ENABLE = yes
 
+COMBO_ENABLE = yes
+
 OLED_ENABLE = yes
 OLED_DRIVER = ssd1306
 WPM_ENABLE = yes
